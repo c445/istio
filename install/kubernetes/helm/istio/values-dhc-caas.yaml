@@ -13,7 +13,7 @@ global:
 
   priorityClassName: dhc-istio
 
-  enableTracing: false
+  enableTracing: true
   proxy:
     image: docker.io_istio_proxyv2
   proxy_init:
