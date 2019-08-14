@@ -1,0 +1,104 @@
+global:
+  hub: reg-dhc.app.corpintra.net/i3-mirror
+  tag: 1.2.3
+
+  # Default mtls policy. If true, mtls between services will be enabled by default.
+  mtls:
+    # Default setting for service-to-service mtls. Can be set explicitly using
+    # destination rules or service annotations.
+    enabled: true
+
+  hyperkube:
+    hub: reg-dhc.app.corpintra.net/i3-mirror
+
+  priorityClassName: dhc-istio
+
+  enableTracing: false
+  proxy:
+    image: docker.io_istio_proxyv2
+  proxy_init:
+    image: docker.io_istio_proxy_init
+
+kubectl:
+  image: docker.io_istio_kubectl
+
+proxyv2:
+  image: docker.io_istio_proxyv2
+
+pilot:
+  image: docker.io_istio_pilot
+
+security:
+  image: docker.io_istio_citadel
+  kubectl:
+    image: docker.io_istio_kubectl
+
+mixer:
+  image: docker.io_istio_mixer
+
+sidecarInjectorWebhook:
+  image: docker.io_istio_sidecar_injector
+
+galley:
+  image: docker.io_istio_galley
+
+grafana:
+  kubectl:
+    image: docker.io_istio_kubectl
+
+prometheus:
+  enabled: false
+  image: docker.io_prom_prometheus
+  hub: reg-dhc.app.corpintra.net/i3-mirror
+  tag: v2.11.1
+
+
+istio_cni:
+  enabled: true
+
+kiali:
+  enabled: true
+  hub: reg-dhc.app.corpintra.net/i3-mirror
+  image: quay.io_kiali_kiali
+  tag: v1.2.0
+  dashboard:
+    username: username
+    passphrase: passphrase
+
+gateways:
+  istio-ingressgateway:
+    type: NodePort
+    ports:
+      - port: 8080
+        targetPort: 8080
+        name: http2
+        nodePort: 30080
+      - port: 8443
+        name: https
+        nodePort: 30443
+      - port: 31400
+        name: tcp
+        nodePort: 31400
+      # Pilot and Citadel MTLS ports are enabled in gateway - but will only redirect
+      # to pilot/citadel if global.meshExpansion settings are enabled.
+      - port: 15011
+        targetPort: 15011
+        name: tcp-pilot-grpc-tls
+      - port: 8060
+        targetPort: 8060
+        name: tcp-citadel-grpc-tls
+      - port: 853
+        targetPort: 853
+        name: tcp-dns-tls
+      - port: 15030
+        targetPort: 15030
+        name: http2-prometheus
+      - port: 15031
+        targetPort: 15031
+        name: http2-grafana
+
+  istio-egressgateway:
+    enabled: true
+    env:
+      # Needed to route traffic via egress gateway if desired.
+      ISTIO_META_REQUESTED_NETWORK_VIEW: "external"

@@ -42,6 +42,8 @@ spec:
           image: "{{ .Values.global.hub }}/{{ .Values.image }}:{{ .Values.global.tag }}"
 {{- end }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          securityContext:
+            runAsUser: 1337
           args:
           {{- if .Values.global.sds.enabled }}
             - --sds-enabled=true
@@ -82,6 +84,8 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 60
           {{- end }}
+          securityContext:
+            runAsUser: 1337
           resources:
 {{- if .Values.resources }}
 {{ toYaml .Values.resources | indent 12 }}

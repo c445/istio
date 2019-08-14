@@ -37,6 +37,9 @@ spec:
         istio: pilot
       annotations:
         sidecar.istio.io/inject: "false"
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9093"
     spec:
       serviceAccountName: istio-pilot-service-account
 {{- if .Values.global.priorityClassName }}
@@ -124,6 +127,8 @@ spec:
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true
+          securityContext:
+            runAsUser: 1337
 {{- if .Values.sidecar }}
         - name: istio-proxy
 {{- if contains "/" .Values.global.proxy.image }}
@@ -155,6 +160,8 @@ spec:
         {{- if .Values.global.trustDomain }}
           - --trust-domain={{ .Values.global.trustDomain }}
         {{- end }}
+          - --configPath
+          - /tmp
           env:
           - name: POD_NAME
             valueFrom:
@@ -181,15 +188,8 @@ spec:
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true
-          {{- if $.Values.global.sds.enabled }}
-          - name: sds-uds-path
-            mountPath: /var/run/sds
-            readOnly: true
-          {{- if $.Values.global.sds.useTrustworthyJwt }}
-          - name: istio-token
-            mountPath: /var/run/secrets/tokens
-          {{- end }}
-          {{- end }}
+          securityContext:
+            runAsUser: 1337
 {{- end }}
       volumes:
       {{- if $.Values.global.sds.enabled }}

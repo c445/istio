@@ -111,6 +111,8 @@
             port: {{ .Values.global.monitoringPort }}
           initialDelaySeconds: 5
           periodSeconds: 5
+        securityContext:
+          runAsUser: 1337
       - name: istio-proxy
 {{- if contains "/" $.Values.global.proxy.image }}
         image: "{{ $.Values.global.proxy.image }}"
@@ -142,6 +144,8 @@
       {{- if $.Values.global.trustDomain }}
         - --trust-domain={{ $.Values.global.trustDomain }}
       {{- end }}
+        - --configPath
+        - /tmp
         env:
         - name: POD_NAME
           valueFrom:
@@ -164,6 +168,8 @@
 {{- else }}
 {{ toYaml .Values.global.defaultResources | indent 10 }}
 {{- end }}
+        securityContext:
+          runAsUser: 1337
         volumeMounts:
         - name: istio-certs
           mountPath: /etc/certs
@@ -304,6 +310,8 @@
             port: {{ .Values.global.monitoringPort }}
           initialDelaySeconds: 5
           periodSeconds: 5
+        securityContext:
+          runAsUser: 1337
       - name: istio-proxy
 {{- if contains "/" $.Values.global.proxy.image }}
         image: "{{ $.Values.global.proxy.image }}"
@@ -332,6 +340,8 @@
         - --controlPlaneAuthPolicy
         - NONE
       {{- end }}
+        - --configPath
+        - /tmp
         env:
         - name: POD_NAME
           valueFrom:
@@ -348,6 +358,8 @@
             fieldRef:
               apiVersion: v1
               fieldPath: status.podIP
+        securityContext:
+          runAsUser: 1337
         resources:
 {{- if $.Values.global.proxy.resources }}
 {{ toYaml $.Values.global.proxy.resources | indent 10 }}
@@ -413,6 +425,9 @@ spec:
         istio-mixer-type: {{ $key }}
       annotations:
         sidecar.istio.io/inject: "false"
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9093,42422"
 {{- with $.Values.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}

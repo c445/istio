@@ -32,7 +32,7 @@ spec:
       priorityClassName: "{{ .Values.global.priorityClassName }}"
 {{- end }}
       containers:
-      - image: "{{ .Values.hub }}/kiali:{{ .Values.tag }}"
+      - image: "{{ .Values.hub }}/{{ .Values.image }}:{{ .Values.tag }}"
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         name: kiali
         command:
@@ -46,11 +46,23 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: PROMETHEUS_SERVICE_URL
+          value: {{ .Values.prometheusAddr }}
+{{- if .Values.contextPath }}
+        - name: SERVER_WEB_ROOT
+          value: {{ .Values.contextPath }}
+{{- end }}
+{{- if .Values.dashboard.jaegerURL }}
+        - name: JAEGER_URL
+          value: {{ .Values.dashboard.jaegerURL }}
+{{- end }}
         volumeMounts:
         - name: kiali-configuration
           mountPath: "/kiali-configuration"
         - name: kiali-secret
           mountPath: "/kiali-secret"
+        securityContext:
+          runAsUser: 1337
         resources:
 {{- if .Values.resources }}
 {{ toYaml .Values.resources | indent 10 }}

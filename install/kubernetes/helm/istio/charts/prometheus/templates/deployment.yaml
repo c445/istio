@@ -46,6 +46,8 @@ spec:
             httpGet:
               path: /-/ready
               port: 9090
+          securityContext:
+            runAsUser: 1337
           resources:
 {{- if .Values.resources }}
 {{ toYaml .Values.resources | indent 12 }}
