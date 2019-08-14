@@ -172,6 +172,8 @@ spec:
           - "{{ $spec.applicationPorts }}"
           {{- end }}
         {{- end }}
+          - --configPath
+          - /tmp
         {{- if $.Values.global.trustDomain }}
           - --trust-domain={{ $.Values.global.trustDomain }}
         {{- end }}
@@ -185,6 +187,8 @@ spec:
             periodSeconds: 2
             successThreshold: 1
             timeoutSeconds: 1
+          securityContext:
+            runAsUser: 1337
           resources:
 {{- if $spec.resources }}
 {{ toYaml $spec.resources | indent 12 }}

@@ -28,6 +28,9 @@ spec:
         istio: galley
       annotations:
         sidecar.istio.io/inject: "false"
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9093"
     spec:
       serviceAccountName: istio-galley-service-account
 {{- if .Values.global.priorityClassName }}
@@ -42,16 +45,17 @@ spec:
 {{- end }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           ports:
-          - containerPort: 443
+          - containerPort: 1443
           - containerPort: {{ .Values.global.monitoringPort }}
           - containerPort: 9901
           command:
           - /usr/local/bin/galley
           - server
           - --meshConfigFile=/etc/mesh-config/mesh
+          - --validation-port=1443
           - --livenessProbeInterval=1s
-          - --livenessProbePath=/healthliveness
-          - --readinessProbePath=/healthready
+          - --livenessProbePath=/tmp/healthliveness
+          - --readinessProbePath=/tmp/healthready
           - --readinessProbeInterval=1s
           - --deployment-namespace={{ .Release.Namespace }}
 {{- if $.Values.global.controlPlaneSecurityEnabled}}
@@ -69,6 +73,8 @@ spec:
           - --log_output_level={{ $.Values.global.logging.level }}
 {{- end}}
           volumeMounts:
+          - name: tmp
+            mountPath: /tmp
           - name: certs
             mountPath: /etc/certs
             readOnly: true
@@ -78,12 +84,14 @@ spec:
           - name: mesh-config
             mountPath: /etc/mesh-config
             readOnly: true
+          securityContext:
+            runAsUser: 1337
           livenessProbe:
             exec:
               command:
                 - /usr/local/bin/galley
                 - probe
-                - --probe-path=/healthliveness
+                - --probe-path=/tmp/healthliveness
                 - --interval=10s
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -112,6 +120,8 @@ spec:
       - name: mesh-config
         configMap:
           name: istio
+      - name: tmp
+        emptyDir: {}
       affinity:
       {{- include "nodeaffinity" . | indent 6 }}
       {{- include "podAntiAffinity" . | indent 6 }}

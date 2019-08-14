@@ -13,13 +13,15 @@ spec:
       serviceAccountName: istio-init-service-account
       containers:
       - name: istio-init-crd-certmanager-11
-        image: "{{ .Values.global.hub }}/kubectl:{{ .Values.global.tag }}"
+        image: "{{ .Values.global.hub }}/{{ .Values.kubectl.image }}:{{ .Values.global.tag }}"
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         volumeMounts:
         - name: crd-certmanager-11
           mountPath: /etc/istio/crd-certmanager-11
           readOnly: true
         command: ["kubectl",  "apply", "-f", "/etc/istio/crd-certmanager-11/crd-certmanager-11.yaml"]
+        securityContext:
+          runAsUser: 1337
       volumes:
       - name: crd-certmanager-11
         configMap:

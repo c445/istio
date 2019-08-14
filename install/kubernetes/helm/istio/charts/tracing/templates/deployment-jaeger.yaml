@@ -73,6 +73,8 @@ spec:
             httpGet:
               path: /
               port: 16686
+          securityContext:
+            runAsUser: 1337
           resources:
 {{- if .Values.jaeger.resources }}
 {{ toYaml .Values.jaeger.resources | indent 12 }}
