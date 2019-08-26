@@ -67,6 +67,8 @@ kiali:
 tracing:
   enabled: true
   jaeger:
+    hub: reg-dhc.app.corpintra.net/i3-mirror
+    tag: 1.13.1
     image: docker.io_jaegertracing_all-in-one
 
 gateways:
