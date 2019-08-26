@@ -1,6 +1,6 @@
 global:
   hub: reg-dhc.app.corpintra.net/i3-mirror
-  tag: 1.2.3
+  tag: 1.2.4
 
   # Default mtls policy. If true, mtls between services will be enabled by default.
   mtls:

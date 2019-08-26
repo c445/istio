@@ -1,5 +1,5 @@
 global:
   hub: reg-dhc.app.corpintra.net/i3-mirror
-  tag: 1.2.3
+  tag: 1.2.4
 kubectl:
   image: docker.io_istio_kubectl
