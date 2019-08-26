@@ -65,7 +65,7 @@ kiali:
     passphrase: passphrase
 
 tracing:
-  enabled: true
+  enabled: false
   jaeger:
     hub: reg-dhc.app.corpintra.net/i3-mirror
     tag: 1.13.1
