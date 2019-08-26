@@ -66,7 +66,8 @@ kiali:
 
 tracing:
   enabled: true
-  provider: zipkin
+  jaeger:
+    image: docker.io_jaegertracing_all-in-one
 
 gateways:
   istio-ingressgateway:

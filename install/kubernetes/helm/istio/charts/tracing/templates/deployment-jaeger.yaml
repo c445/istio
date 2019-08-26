@@ -42,7 +42,9 @@ spec:
 {{- end }}
       containers:
         - name: jaeger
-          image: "{{ .Values.jaeger.hub }}/all-in-one:{{ .Values.jaeger.tag }}"
+          image: "{{ .Values.jaeger.hub }}/{{ .Values.jaeger.image }}:{{ .Values.jaeger.tag }}"
+          securityContext:
+            runAsUser: 1337
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           ports:
             - containerPort: 9411
