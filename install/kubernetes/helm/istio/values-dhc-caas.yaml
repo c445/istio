@@ -13,7 +13,6 @@ global:
 
   priorityClassName: dhc-istio
 
-  enableTracing: true
   proxy:
     image: docker.io_istio_proxyv2
   proxy_init:
@@ -64,6 +63,10 @@ kiali:
   dashboard:
     username: username
     passphrase: passphrase
+
+tracing:
+  enabled: true
+  provider: zipkin
 
 gateways:
   istio-ingressgateway:
