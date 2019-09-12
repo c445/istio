@@ -222,6 +222,15 @@ containers:
     periodSeconds: {{ annotation .ObjectMeta `readiness.status.sidecar.istio.io/periodSeconds` .Values.global.proxy.readinessPeriodSeconds }}
     failureThreshold: {{ annotation .ObjectMeta `readiness.status.sidecar.istio.io/failureThreshold` .Values.global.proxy.readinessFailureThreshold }}
   {{ end -}}
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - echo $ISTIO_METAJSON_LABELS | grep -qE "podtype.:.cronjob" && if ! pidof envoy &>/dev/null; then if pidof pilot-agent &>/dev/null; then kill -s TERM $(pidof pilot-agent); exit 1; fi; fi; exit 0
+    initialDelaySeconds: 3
+    periodSeconds: 10
+    failureThreshold: 5
   securityContext:
     {{- if .Values.global.proxy.privileged }}
     privileged: true
