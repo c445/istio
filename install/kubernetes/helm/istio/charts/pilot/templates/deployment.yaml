@@ -39,7 +39,8 @@ spec:
         sidecar.istio.io/inject: "false"
         scheduler.alpha.kubernetes.io/critical-pod: ""
         prometheus.io/scrape: "true"
-        prometheus.io/port: "9093"
+        prometheus.io/port: "15014"
+        prometheus.io/path: "/metrics"
     spec:
       serviceAccountName: istio-pilot-service-account
 {{- if .Values.global.priorityClassName }}
