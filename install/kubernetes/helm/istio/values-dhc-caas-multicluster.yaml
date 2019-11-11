@@ -92,6 +92,9 @@ gateways:
   istio-ingressgateway:
     type: NodePort
     ports:
+      - port: 15443
+        targetport: 15443
+        name: sni
       - port: 8080
         targetPort: 8080
         name: http2
