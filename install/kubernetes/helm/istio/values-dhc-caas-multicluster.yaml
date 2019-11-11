@@ -27,7 +27,8 @@ global:
 
 istiocoredns:
   enabled: true
-  coreDNSImage: caas/coredns:1.6.5
+  coreDNSImage: reg-dhc.app.corpintra.net/caas/coredns:1.6.5
+  coreDNSPluginImage: reg-dhc.app.corpintra.net/caas/coredns-plugin:0.2-istio-1.1
 
 kubectl:
   image: docker.io_istio_kubectl
