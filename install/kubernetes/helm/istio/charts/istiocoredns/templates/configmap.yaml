@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name }}
 data:
   Corefile: |
-    .:53 {
+    .:1053 {
           errors
           health
           proxy global 127.0.0.1:8053 {

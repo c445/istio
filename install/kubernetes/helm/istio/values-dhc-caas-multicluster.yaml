@@ -27,8 +27,6 @@ global:
 
 # Multicluster with gateways requires a root CA
 # Cluster local CAs are bootstrapped with the root CA.
-security:
-  selfSigned: false
 
 istiocoredns:
   enabled: true
@@ -45,6 +43,7 @@ pilot:
   image: docker.io_istio_pilot
 
 security:
+  selfSigned: false
   image: docker.io_istio_citadel
   kubectl:
     image: docker.io_istio_kubectl
@@ -93,7 +92,7 @@ gateways:
     type: NodePort
     ports:
       - port: 15443
-        targetport: 15443
+        targetPort: 15443
         name: sni
       - port: 8080
         targetPort: 8080
